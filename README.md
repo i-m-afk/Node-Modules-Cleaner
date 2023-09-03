@@ -2,7 +2,7 @@
 
 ## Description
 
-This is a script to remove the `node_modules` folder of a project.
+This is a script to remove the `node_modules` folder of a project. It will recursively search for all the `node_modules` folders in the root directory and delete them.
 
 ## Usage
 
