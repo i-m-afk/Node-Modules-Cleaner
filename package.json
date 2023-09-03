@@ -1,13 +1,9 @@
 {
-  "name": "rm-node-modules",
+  "name": "clean-node-modules",
   "version": "1.0.0",
   "description": "find and delete node_modules",
   "main": "index.js",
   "type": "module",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node index.js"
-  },
   "keywords": [
     "delete",
     "remove",

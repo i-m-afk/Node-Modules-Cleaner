@@ -19,6 +19,8 @@ This is a script to remove the `node_modules` folder of a project. It will recur
         node index.js  
 ```
 
+4. The script will ask you if you want to delete the `node_modules` folders. Type `y` or `n` and press enter.
+
 ## Warning ⚠️
 
 I am not responsible for any damage caused by this script. Use it at your own risk.
