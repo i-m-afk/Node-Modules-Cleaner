@@ -18,7 +18,6 @@ async function startSearch(path) {
   console.log(chalk.green("Search completed successfully."));
   console.log(chalk.yellow(finder.filesList));
 
-  // Display options menu after search completes
   showOptions();
 }
 
@@ -108,9 +107,7 @@ async function selectFilesToDelete() {
 
   console.log(chalk.green("Node_modules directories deleted successfully."));
 
-  // Display options menu after deletion completes
   showOptions();
 }
 
-// Start by displaying the main options menu
 showOptions();
