@@ -1,91 +1,116 @@
+import FindFiles from "./FindFiles.js";
+import inquirer from "inquirer";
+import chalk from "chalk";
 import process from "process";
-import { resolve } from "path";
-import fs from "fs/promises";
-import readline from "readline";
+import DeleteFiles from "./DeleteFiles.js";
 
-// get size of the directory
-async function getDirectorySize(path) {
-  let totalSize = 0;
-  const files = await fs.readdir(path);
-  for (const file of files) {
-    const currentPath = resolve(path, file);
-    const stats = await fs.stat(currentPath);
+// Instantiate FindFiles and DeleteFiles classes
+const finder = new FindFiles();
+const deleter = new DeleteFiles();
 
-    if (stats.isDirectory()) {
-      totalSize += await getDirectorySize(currentPath);
-    } else {
-      totalSize += stats.size;
-    }
-  }
-  return totalSize;
+/**
+ * Function to initiate the search for node_modules directories.
+ * @param {string} path - The starting path for the search.
+ */
+async function startSearch(path) {
+  console.log("Searching for node_modules directories...");
+  await finder.search(path, 10, () => {});
+  console.log(chalk.green("Search completed successfully."));
+  console.log(chalk.yellow(finder.filesList));
+
+  // Display options menu after search completes
+  showOptions();
 }
 
-// confirm deletion
-async function confirmDeletion(path) {
-  const rl = readline.createInterface({
-    input: process.stdin,
-    output: process.stdout,
-  });
-
-  return new Promise((resolve) => {
-    rl.question(`Confirm delete '${path}'? (y/n): `, (input) => {
-      resolve(input);
-      rl.close();
+/**
+ * Function to display the main options menu and handle user choices.
+ */
+function showOptions() {
+  inquirer
+    .prompt([
+      {
+        type: "list",
+        name: "option",
+        message: "Choose an option:",
+        choices: [
+          "Search for node_modules directories",
+          "Delete found node_modules directories",
+          "Exit",
+        ],
+      },
+    ])
+    .then((answers) => {
+      if (answers.option === "Search for node_modules directories") {
+        optionsStartSearch();
+      } else if (answers.option === "Delete found node_modules directories") {
+        startDelete();
+      } else {
+        console.log(chalk.blue("Goodbye!"));
+        process.exit(0);
+      }
     });
+}
+
+/**
+ * Function to handle user input for the path to start searching node_modules directories.
+ */
+function optionsStartSearch() {
+  inquirer
+    .prompt([
+      {
+        type: "input",
+        name: "path",
+        message:
+          "Enter the path to start searching for node_modules directories:",
+        validate: (input) => input.trim() !== "",
+        default: process.cwd(),
+      },
+    ])
+    .then((answers) => {
+      const path = answers.path;
+      startSearch(path);
+    });
+}
+
+/**
+ * Function to initiate the deletion of selected node_modules directories.
+ */
+async function startDelete() {
+  if (finder.filesList.length === 0) {
+    console.log(chalk.yellow("No node_modules directories found."));
+    showOptions();
+  } else {
+    // If node_modules directories are found, prompt user to select directories for deletion
+    selectFilesToDelete();
+  }
+}
+
+/**
+ * Function to prompt the user to select node_modules directories for deletion.
+ */
+async function selectFilesToDelete() {
+  const answers = await inquirer.prompt([
+    {
+      type: "checkbox",
+      name: "filesToDelete",
+      message:
+        "Select the node_modules directories to delete: (space to select and enter to confirm)",
+      choices: finder.filesList,
+    },
+  ]);
+
+  // Add selected directories to the delete queue and delete them
+  answers.filesToDelete.forEach((path) => {
+    deleter.addFileToDelete(path);
   });
+
+  await deleter.deleteAllFiles();
+
+  console.log(chalk.green("Node_modules directories deleted successfully."));
+
+  // Display options menu after deletion completes
+  showOptions();
 }
 
-// delete directory
-async function deleteDirectory(path) {
-  try {
-    await fs.rm(path, { recursive: true });
-    console.log(`Directory '${path}' deleted`);
-  } catch (err) {
-    console.error(`Error deleting '${path}': ${err.message}`);
-  }
-}
-
-// find and delete node_modules
-async function findAndDeleteNodeModules(path) {
-  try {
-    const dirs = await fs.readdir(path);
-
-    // traverse the current directory and run the command
-    for (const dir of dirs) {
-      // skip hidden directories
-      if (dir.startsWith(".")) {
-        continue;
-      }
-
-      const currentPath = resolve(path, dir);
-      const stats = await fs.stat(currentPath);
-
-      if (stats.isDirectory()) {
-        if (dir === "node_modules") {
-          console.log("Found node_modules:", currentPath);
-          const answer = await confirmDeletion(currentPath);
-
-          if (answer.toLowerCase() === "y") {
-            await deleteDirectory(currentPath);
-          } else {
-            console.log("Not deleted:", currentPath);
-          }
-        } else {
-          await findAndDeleteNodeModules(currentPath);
-        }
-      }
-    }
-  } catch (err) {
-    console.error(`Error while searching for node_modules: ${err.message}`);
-  }
-}
-
-(async () => {
-  const currentPath = process.cwd();
-  let totalSize = 0;
-
-  await findAndDeleteNodeModules(currentPath);
-  totalSize = await getDirectorySize(currentPath);
-
-  console.log(`Total file size: ${totalSize / 1024 / 1024} MB`);
-})();
+// Start by displaying the main options menu
+showOptions();
