@@ -40,5 +40,3 @@ Questions
 If you have any questions that are not covered by this guide, feel free to reach out to  rishavkumar208@gmail.com .
 
 Thank you for your contributions to `node_modules` Cleaner! We appreciate your help in making our project better.
-
-Replace [Your Project Name] and [maintainer's email or contact details] with your actual project name and the c
