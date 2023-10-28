@@ -3,10 +3,12 @@ import inquirer from "inquirer";
 import chalk from "chalk";
 import process from "process";
 import DeleteFiles from "./DeleteFiles.js";
+import FolderSize from "./FolderSize.js";
 
-// Instantiate FindFiles and DeleteFiles classes
+// Instantiate FindFiles, DeleteFiles, FolderSize classes
 const finder = new FindFiles();
 const deleter = new DeleteFiles();
+const folderSizes = new FolderSize();
 
 /**
  * Function to initiate the search for node_modules directories.
@@ -15,13 +17,18 @@ const deleter = new DeleteFiles();
 async function startSearch(path, depth) {
   finder.filesList = [];
   deleter.filesToDelete = [];
+  folderSizes.folders = [];
 
   console.log("Searching for node_modules directories...");
   await finder.search(path, depth, () => {});
   console.log(chalk.green("Search completed successfully."));
+
+  console.log(chalk.yellow(`Total files found: ${finder.filesList.length}`));
   console.log(chalk.yellow(finder.filesList));
 
   showOptions();
+
+  await folderSizes.storeFileSize(finder.filesList);
 }
 
 /**
@@ -139,14 +146,29 @@ async function selectFilesToDelete() {
     },
   ]);
 
-  // Add selected directories to the delete queue and delete them
   answers.filesToDelete.forEach((path) => {
     deleter.addFileToDelete(path);
+    folderSizes.folders.forEach((folder) => {
+      if (folder.path === path) {
+        folder.isDeleted = true;
+      }
+    });
   });
 
   await deleter.deleteAllFiles();
 
-  console.log(chalk.green("Node_modules directories deleted successfully."));
+  console.log(
+    chalk.yellow("Total size of node_modules directories:"),
+    chalk.red(folderSizes.formatSize(folderSizes.totalSize))
+  );
+  console.log(
+    chalk.green("Selected node_modules directories deleted successfully.")
+  );
+
+  console.log(
+    chalk.yellow("Total storage freed:"),
+    chalk.red(folderSizes.formatSize(folderSizes.getDeletedSize()))
+  );
 
   showOptions();
 }
