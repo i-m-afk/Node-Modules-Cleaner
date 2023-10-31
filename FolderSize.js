@@ -69,7 +69,7 @@ export default class FolderSize {
   calculateTotalSize() {
     this.totalSize = this.folders.reduce(
       (total, folder) => total + folder.size,
-      0
+      0,
     );
   }
 

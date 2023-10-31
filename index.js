@@ -159,15 +159,15 @@ async function selectFilesToDelete() {
 
   console.log(
     chalk.yellow("Total size of node_modules directories:"),
-    chalk.red(folderSizes.formatSize(folderSizes.totalSize))
+    chalk.red(folderSizes.formatSize(folderSizes.totalSize)),
   );
   console.log(
-    chalk.green("Selected node_modules directories deleted successfully.")
+    chalk.green("Selected node_modules directories deleted successfully."),
   );
 
   console.log(
     chalk.yellow("Total storage freed:"),
-    chalk.red(folderSizes.formatSize(folderSizes.getDeletedSize()))
+    chalk.red(folderSizes.formatSize(folderSizes.getDeletedSize())),
   );
 
   showOptions();
