@@ -11,9 +11,9 @@ An alternative to npkill.
 
 1. Clone the repository
 
-    ```bash
-        git clone https://github.com/i-m-afk/Node-Modules-Cleaner
-    ```
+   ```bash
+       git clone https://github.com/i-m-afk/Node-Modules-Cleaner
+   ```
 
 2. Run `npm install` or `npm i` to install the dependencies
 3. Run `npm start` to start the script
