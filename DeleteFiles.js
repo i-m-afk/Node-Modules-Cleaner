@@ -28,9 +28,10 @@ export default class DeleteFiles {
    * @return {Promise<void>} - A Promise that resolves when all files and directories are deleted.
    */
   async deleteAllFiles() {
-    while (this.filesToDelete.length !== 0) {
-      await this.deleteDirectory(this.filesToDelete.pop());
-    }
+    const deletePromises = this.filesToDelete.map((path) =>
+      this.deleteDirectory(path),
+    );
+    await Promise.all(deletePromises);
   }
 
   /**

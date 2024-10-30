@@ -26,9 +26,8 @@ async function startSearch(path, depth) {
   console.log(chalk.yellow(`Total files found: ${finder.filesList.length}`));
   console.log(chalk.yellow(finder.filesList));
 
-  showOptions();
-
   await folderSizes.storeFileSize(finder.filesList);
+  showOptions();
 }
 
 /**
@@ -76,13 +75,17 @@ const choicesForOptionStartSearch = [
     name: "depthChoice",
     message: "Enter the depth of the search:",
     choices: ["low", "medium", "high", "custom"],
-    when: (answers) => answers.depthChoice !== "custom",
   },
   {
     type: "input",
     name: "customDepth",
     message: "Enter the custom depth of the search:",
-    validate: (input) => input.trim() !== "",
+    validate: (input) => {
+      const parsed = parseInt(input);
+      return (
+        (!isNaN(parsed) && parsed > 0) || "Please enter a valid positive number"
+      );
+    },
     when: (answers) => answers.depthChoice === "custom",
     default: 10,
   },

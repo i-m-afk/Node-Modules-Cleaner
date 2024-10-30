@@ -40,15 +40,19 @@ export default class FindFiles {
    */
   async find(path, dirs, depth) {
     for (const dir of dirs) {
-      if (!this.isHiddenDirectory(dir)) {
-        const currentPath = resolve(path, dir);
-        const stats = await fs.stat(currentPath);
-        if (this.isNodeModuleFolder(stats, dir)) {
-          this.storeFiles(currentPath);
-        } else if (stats.isDirectory() && depth > 0) {
-          const subDirs = await fs.readdir(currentPath);
-          await this.find(currentPath, subDirs, depth - 1);
+      try {
+        if (!this.isHiddenDirectory(dir)) {
+          const currentPath = resolve(path, dir);
+          const stats = await fs.stat(currentPath);
+          if (this.isNodeModuleFolder(stats, dir)) {
+            this.storeFiles(currentPath);
+          } else if (stats.isDirectory() && depth > 0) {
+            const subDirs = await fs.readdir(currentPath);
+            await this.find(currentPath, subDirs, depth - 1);
+          }
         }
+      } catch (err) {
+        console.error(err);
       }
     }
   }
