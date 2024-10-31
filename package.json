@@ -1,6 +1,6 @@
 {
   "name": "@i-m-afk/node-modules-cleaner",
-  "version": "2.0.0",
+  "version": "2.0.2",
   "description": "find and delete node_modules",
   "main": "index.js",
   "type": "module",
@@ -9,6 +9,9 @@
     "start": "node index.js",
     "format": "prettier --write .",
     "format-check": "prettier --check ."
+  },
+  "bin": {
+    "node-modules-cleaner": "index.js"
   },
   "keywords": [
     "delete",

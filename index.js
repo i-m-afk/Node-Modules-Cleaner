@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 import FindFiles from "./FindFiles.js";
 import inquirer from "inquirer";
 import chalk from "chalk";
