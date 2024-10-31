@@ -4,7 +4,7 @@
 
 ## Description
 
-An easy way to clean all the `node_modules` folders in your projects. This script will delete all the `node_modules` folders in the current directory and all the subdirectories.
+An easy way to clean all the `node_modules` folders in your projects. This script will search and delete all the selected `node_modules` folders in the current directory/ path provided by user and all its the subdirectories.
 An alternative to npkill.
 
 ## Usage
@@ -21,7 +21,3 @@ An alternative to npkill.
 5. Go to search and input the directory you want to search in (e.g. D://Projects)
 6. Wait for the script to finish searching
 7. Use `space` to select and `enter` to confirm the folders to delete
-
-## Warning ⚠️
-
-Tested only on windows. Use at your own risk.
