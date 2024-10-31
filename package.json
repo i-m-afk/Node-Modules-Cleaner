@@ -1,5 +1,5 @@
 {
-  "name": "node-modules-cleaner",
+  "name": "@i-m-afk/node-modules-cleaner",
   "version": "2.0.0",
   "description": "find and delete node_modules",
   "main": "index.js",
